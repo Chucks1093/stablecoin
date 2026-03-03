@@ -2,7 +2,7 @@
 // Compatible with OpenZeppelin Stellar Soroban Contracts ^0.3.0
 
 use soroban_sdk::{Address, Env};
-use stellar_access_control::{self as access_control};
+use stellar_access::access_control;
 use crate::types::{create_role_symbol, UPGRADER_ROLE};
 
 /// Upgradeable extension for the stablecoin
@@ -11,7 +11,7 @@ pub struct StablecoinUpgradeable;
 impl StablecoinUpgradeable {
     /// Require authorization for upgrades
     pub fn require_auth(env: &Env, operator: &Address) {
-        access_control::ensure_role(env, operator, &create_role_symbol(env, UPGRADER_ROLE));
+        access_control::ensure_role(env, &create_role_symbol(env, UPGRADER_ROLE), operator);
     }
 
     /// Check if an address can perform upgrades

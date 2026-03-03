@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 // Compatible with OpenZeppelin Stellar Soroban Contracts ^0.3.0
 
-use soroban_sdk::{contract, contractimpl, Address, Env, Symbol, String, Vec};
-use stellar_fungible::Base;
-use stellar_access_control as access_control;
-use stellar_pausable as pausable;
+use soroban_sdk::{contract, contractimpl, Address, Env, MuxedAddress, Symbol, String, Vec};
+use stellar_access::access_control;
+use stellar_contract_utils::pausable;
+use stellar_tokens::fungible::Base;
 
 // Import our modular components
 use crate::types::{StablecoinError, MINTER_ROLE, PAUSER_ROLE, UPGRADER_ROLE, MINT_EVENT, BURN_EVENT, TRANSFER_EVENT, PAUSE_EVENT, UNPAUSE_EVENT};
@@ -50,7 +50,7 @@ impl MyStablecoin {
         caller.require_auth();
         
         // Validate minter role
-        access_control::ensure_role(&env, &caller, &Symbol::new(&env, MINTER_ROLE));
+        access_control::ensure_role(&env, &Symbol::new(&env, MINTER_ROLE), &caller);
         
         // Comprehensive validation for mint operation
         validate_mint_comprehensive(&env, &to, amount)?;
@@ -78,7 +78,8 @@ impl MyStablecoin {
         validate_transfer_comprehensive(&env, &from, &to, amount)?;
         
         // Transfer tokens
-        Base::transfer(&env, &from, &to, amount);
+        let to_muxed = MuxedAddress::from(to.clone());
+        Base::transfer(&env, &from, &to_muxed, amount);
         
         // Emit transfer event
         env.events().publish(
@@ -177,7 +178,7 @@ impl MyStablecoin {
         caller.require_auth();
         
         // Validate minter role
-        access_control::ensure_role(&env, &caller, &Symbol::new(&env, MINTER_ROLE));
+        access_control::ensure_role(&env, &Symbol::new(&env, MINTER_ROLE), &caller);
         
         // Validate and mint to each recipient
         for (account, amount) in recipients.iter() {
@@ -203,7 +204,7 @@ impl MyStablecoin {
         caller.require_auth();
         
         // Validate pauser role
-        access_control::ensure_role(&env, &caller, &Symbol::new(&env, PAUSER_ROLE));
+        access_control::ensure_role(&env, &Symbol::new(&env, PAUSER_ROLE), &caller);
         
         // Pause the contract
         pausable::pause(&env);
@@ -223,7 +224,7 @@ impl MyStablecoin {
         caller.require_auth();
         
         // Validate pauser role
-        access_control::ensure_role(&env, &caller, &Symbol::new(&env, PAUSER_ROLE));
+        access_control::ensure_role(&env, &Symbol::new(&env, PAUSER_ROLE), &caller);
         
         // Unpause the contract
         pausable::unpause(&env);

@@ -2,8 +2,8 @@
 // Compatible with OpenZeppelin Stellar Soroban Contracts ^0.3.0
 
 use soroban_sdk::{Address, Env};
-use stellar_pausable::{self as pausable};
-use stellar_access_control_macros::only_role;
+use stellar_contract_utils::pausable;
+use stellar_macros::only_role;
 
 /// Pausable extension for the stablecoin
 pub struct StablecoinPausable;
