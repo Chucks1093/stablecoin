@@ -2,8 +2,8 @@
 // Compatible with OpenZeppelin Stellar Soroban Contracts ^0.3.0
 
 use soroban_sdk::{Address, Env};
-use stellar_macros::when_not_paused;
-use stellar_tokens::fungible::Base;
+use stellar_fungible::Base;
+use stellar_pausable_macros::when_not_paused;
 use crate::utils::validate_burn_amount;
 
 /// Burnable extension for the stablecoin

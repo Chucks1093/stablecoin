@@ -12,7 +12,7 @@ repository = "https://github.com/PACTO-LAT/stablecoin.git"
 version = "0.0.1"
 
 [workspace.dependencies]
-soroban-sdk = "23.4.0"
+soroban-sdk = "25.0.2"
 stellar-tokens = "0.6.0"
 stellar-access = "0.6.0"
 stellar-contract-utils = "0.6.0"

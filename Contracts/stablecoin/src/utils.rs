@@ -2,8 +2,8 @@
 // Compatible with OpenZeppelin Stellar Soroban Contracts ^0.3.0
 
 use soroban_sdk::{Env, Address, Symbol, String};
-use stellar_access::access_control;
-use stellar_tokens::fungible::Base;
+use stellar_access_control::{self as access_control};
+use stellar_fungible::Base;
 use crate::types::{
     StablecoinError, DECIMALS, NAME, SYMBOL, MINTER_ROLE, PAUSER_ROLE, UPGRADER_ROLE,
     MAX_SUPPLY, MAX_SINGLE_OPERATION, MIN_AMOUNT, ENABLE_SUPPLY_LIMITS, ENABLE_OPERATION_LIMITS
@@ -27,9 +27,9 @@ pub fn initialize_access_control(
     access_control::set_admin(env, admin);
     
     // Grant specific roles using the no-auth variants (safe in constructor)
-    access_control::grant_role_no_auth(env, pauser, &Symbol::new(env, PAUSER_ROLE), admin);
-    access_control::grant_role_no_auth(env, upgrader, &Symbol::new(env, UPGRADER_ROLE), admin);
-    access_control::grant_role_no_auth(env, minter, &Symbol::new(env, MINTER_ROLE), admin);
+    access_control::grant_role_no_auth(env, admin, pauser, &Symbol::new(env, PAUSER_ROLE));
+    access_control::grant_role_no_auth(env, admin, upgrader, &Symbol::new(env, UPGRADER_ROLE));
+    access_control::grant_role_no_auth(env, admin, minter, &Symbol::new(env, MINTER_ROLE));
 }
 
 /// Validate that an address is not the zero address or invalid address
